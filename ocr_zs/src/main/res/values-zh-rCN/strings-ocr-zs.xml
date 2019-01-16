@@ -1,0 +1,10 @@
+
+<resources>
+    <string name="translate_success">识别完成:</string>
+    <string name="translate_failed">识别出错:</string>
+    <string name="translating">正在识别...</string>
+    <string name="translate_time">已用时长:</string>
+    <string name="picture_invalid">图片失效，请重新设置</string>
+    <string name="camera_permission_required">本功能需要相机权限！</string>
+    <string name="bank_card_hint_view_text">请对齐卡片，将卡号放入小框内！</string>
+</resources>

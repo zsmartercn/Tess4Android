@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="result_pop_padding">2dp</dimen>
+    <dimen name="margin_10dp">5dp</dimen>
+    <dimen name="margin_20dp">10dp</dimen>
+</resources>

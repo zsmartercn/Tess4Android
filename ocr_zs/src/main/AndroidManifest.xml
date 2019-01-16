@@ -1,0 +1,29 @@
+<!--
+  ~ Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+  -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.zsmarter.ocr">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+
+    <uses-feature android:name="android.hardware.camera2.full"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application android:allowBackup="true"
+                 android:supportsRtl="true"
+                 android:vmSafeMode="true">
+
+        <activity android:name="com.zsmarter.ocr.camera.CameraActivity"
+                  android:configChanges="screenSize|orientation"
+                  android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"
+            tools:targetApi="honeycomb" />
+
+    </application>
+
+</manifest>

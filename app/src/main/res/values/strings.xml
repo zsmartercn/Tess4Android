@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">OCR_Demo</string>
+    <string name="single_text">single text</string>
+    <string name="multiLine_text">MultiLine text</string>
+    <string name="chi_sim">Chinese</string>
+    <string name="eng">English</string>
+    <string name="num">Number</string>
+
+
+    <string name="mode">mode</string>
+    <string name="language">language</string>
+    <string name="picture_crop">clipping</string>
+    <string name="capture_box">picture capture box</string>
+    <string name="scan">auto scan</string>
+    <string name="take_photo">take a photo</string>
+    <string name="local_pic">select a picture</string>
+    <string name="again">again</string>
+
+</resources>

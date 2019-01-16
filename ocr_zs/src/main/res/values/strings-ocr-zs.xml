@@ -1,0 +1,11 @@
+
+<resources>
+    <string name="translate_success">translator success:</string>
+    <string name="translate_failed">translator failed:</string>
+    <string name="translating">translating…</string>
+    <string name="translate_time">translator time:</string>
+    <string name="picture_invalid">The picture is invalid, please reset the picture</string>
+
+    <string name="camera_permission_required">need camera permission！</string>
+    <string name="bank_card_hint_view_text">Please align the card and put the card number in the small box！</string>
+</resources>
