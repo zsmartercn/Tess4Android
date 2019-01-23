@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////
 // File:        intsimdmatrix.cpp
 // Description: Base class for 8-bit int SIMD matrix multipliers.
-// Author:      Ray Smith
+// Author:      Zhang Qiang (based on code from Ray Smith)
 // Created:     Tue Aug 15 08:01:32 PST 2017
 //
-// (C) Copyright 2017, Google Inc.
+// (C) Copyright 2018, ZSmarter Technology Co., Ltd.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at

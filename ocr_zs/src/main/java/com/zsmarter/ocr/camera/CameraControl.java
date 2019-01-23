@@ -1,5 +1,14 @@
 /*
- * Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+ * (C) Copyright 2018, ZSmarter Technology Co, Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package com.zsmarter.ocr.camera;
 
@@ -25,9 +34,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * 5.0以下相机API的封装。
- */
 @SuppressWarnings("deprecation")
 public class CameraControl implements ICameraControl {
 
@@ -70,7 +76,6 @@ public class CameraControl implements ICameraControl {
     }
 
     private void onRequestDetect(byte[] data) {
-        // 相机已经关闭
         if (camera == null || data == null || optSize == null) {
             return;
         }
@@ -87,7 +92,7 @@ public class CameraControl implements ICameraControl {
 //            clearPreviewCallback();
 //        }
         } catch (OutOfMemoryError e) {
-            // 内存溢出则取消当次操作
+
         } finally {
             try {
                 os.close();
@@ -162,7 +167,7 @@ public class CameraControl implements ICameraControl {
         if (camera != null) {
             camera.setPreviewCallback(null);
             stopPreview();
-            // 避免同步代码，为了先设置null后release
+
             Camera tempC = camera;
             camera = null;
             tempC.release();
@@ -279,14 +284,7 @@ public class CameraControl implements ICameraControl {
     private byte[] buffer = null;
 
     private void setPreviewCallbackImpl() {
-//        if (buffer == null) {
-//            Log.d(TAG, "setPreviewCallbackImpl: buffer" + buffer);
-//            buffer = new byte[displayView.getWidth()
-//                    * displayView.getHeight() * ImageFormat.getBitsPerPixel(ImageFormat.NV21) / 8];
-//        }
         if (camera != null) {
-//            camera.addCallbackBuffer(buffer);
-//            camera.setPreviewCallbackWithBuffer(previewCallback);
             camera.setPreviewCallback(previewCallback);
         }
     }
@@ -301,19 +299,20 @@ public class CameraControl implements ICameraControl {
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(final byte[] data, Camera camera) {
-            // 扫描成功阻止打开新线程处理
+            // Scanning successfully prevents opening new threads
             if (abortingScan.get()) {
                 return;
             }
 
-            // 节流
+            // throttle
             if (previewFrameCount++ % 60 != 0) {
                 return;
             }
 
             Log.d(TAG, "onPreviewFrame: abortingScan.get() : " + abortingScan.get());
 
-            // 在某些机型和某项项目中，某些帧的data的数据不符合nv21的格式，需要过滤，否则后续处理会导致crash
+            // In some devices and projects, the data of some frames does not conform to nv21 format and need to be filtered.
+            // Otherwise, subsequent processing will lead to crash.
             if (data != null && data.length != parameters.getPreviewSize().width * parameters.getPreviewSize().height * 1.5) {
                 return;
             }
@@ -390,7 +389,6 @@ public class CameraControl implements ICameraControl {
         }
     };
 
-    // 开启预览
     private void startPreview(boolean checkPermission) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -443,7 +441,6 @@ public class CameraControl implements ICameraControl {
                     }
                 });
             } catch (Throwable e) {
-                // startPreview是异步实现，可能在某些机器上前几次调用会autofocus failß
             }
         }
     }
@@ -475,10 +472,10 @@ public class CameraControl implements ICameraControl {
 
         for (Camera.Size size : sizes) {
             if (size.width >= width && size.height >= height && size.width * height == size.height * width) {
-                // 比例相同
+
                 candidates.add(size);
             } else if (size.height >= width && size.width >= height && size.width * width == size.height * height) {
-                // 反比例
+
                 candidates.add(size);
             }
         }
@@ -536,9 +533,10 @@ public class CameraControl implements ICameraControl {
     }
 
     /**
-     * 有些相机匹配不到完美的比例。比如。我们的layout是4:3的。预览只有16:9
-     * 的，如果直接显示图片会拉伸，变形。缩放的话，又有黑边。所以我们采取的策略
-     * 是，等比例放大。这样预览的有一部分会超出屏幕。拍照后再进行裁剪处理。
+     * Some cameras do not match perfectly. For example. Our layout is 4:3. The preview is
+     * only 16:9. If the picture is displayed directly, it will stretch
+     * and deform. If you zoom in, you have a black edge. So our strategy is to scale up
+     * equally. Part of this preview goes beyond the screen. Photographs are taken and then cut.
      */
     private class PreviewView extends FrameLayout {
 
@@ -572,10 +570,8 @@ public class CameraControl implements ICameraControl {
             int width = w;
             int height = h;
             if (w < h) {
-                // 垂直模式，高度固定。
                 height = (int) (width * ratio);
             } else {
-                // 水平模式，宽度固定。
                 width = (int) (height * ratio);
             }
 

@@ -1,5 +1,14 @@
 /*
- * Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+ * (C) Copyright 2018, ZSmarter Technology Co, Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package com.zsmarter.ocr.camera;
 
@@ -9,22 +18,12 @@ import android.view.View;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Android 5.0 相机的API发生很大的变化。些类屏蔽掉了 api的变化。相机的操作和功能，抽象剥离出来。
- */
 public interface ICameraControl {
 
-    /**
-     * 闪光灯关 {@link #setFlashMode(int)}
-     */
     int FLASH_MODE_OFF = 0;
-    /**
-     * 闪光灯开 {@link #setFlashMode(int)}
-     */
+
     int FLASH_MODE_TORCH = 1;
-    /**
-     * 闪光灯自动 {@link #setFlashMode(int)}
-     */
+
     int FLASH_MODE_AUTO = 2;
 
     @IntDef({FLASH_MODE_TORCH, FLASH_MODE_OFF, FLASH_MODE_AUTO})
@@ -32,101 +31,45 @@ public interface ICameraControl {
 
     }
 
-    /**
-     * 照相回调。
-     */
+
     interface OnTakePictureCallback {
         void onPictureTaken(byte[] data);
     }
 
-    /**
-     * 设置本地质量控制回调，如果不设置则视为不扫描调用本地质量控制代码。
-     */
     void setDetectCallback(boolean isScan, OnDetectPictureCallback callback);
 
-    /**
-     * 预览回调
-     */
     interface OnDetectPictureCallback {
         void onDetect(byte[] data, int rotation);
     }
 
-    /**
-     * 打开相机。
-     */
     void start();
 
-    /**
-     * 关闭相机
-     */
     void stop();
 
     void pause();
 
     void resume();
 
-    /**
-     * 相机对应的预览视图。
-     * @return 预览视图
-     */
     View getDisplayView();
 
-    /**
-     * 看到的预览可能不是照片的全部。返回预览视图的全貌。
-     * @return 预览视图frame;
-     */
     Rect getPreviewFrame();
 
-    /**
-     * 拍照。结果在回调中获取。
-     * @param callback 拍照结果回调
-     */
     void takePicture(OnTakePictureCallback callback);
 
-    /**
-     * 设置权限回调，当手机没有拍照权限时，可在回调中获取。
-     * @param callback 权限回调
-     */
     void setPermissionCallback(PermissionCallback callback);
 
-    /**
-     * 设置水平方向
-     * @param displayOrientation 参数值见 {@link com.zsmarter.ocr.camera.CameraView.Orientation}
-     */
     void setDisplayOrientation(@CameraView.Orientation int displayOrientation);
 
-    /**
-     * 获取到拍照权限时，调用些函数以继续。
-     */
     void refreshPermission();
 
-    /**
-     * 获取已经扫描成功，处理中
-     */
     AtomicBoolean getAbortingScan();
 
-    /**
-     *  设置闪光灯状态。
-     * @param flashMode {@link #FLASH_MODE_TORCH,#FLASH_MODE_OFF,#FLASH_MODE_AUTO}
-     */
     void setFlashMode(@FlashMode int flashMode);
 
-    /**
-     * 获取当前闪光灯状态
-     * @return 当前闪光灯状态 参见 {@link #setFlashMode(int)}
-     */
     @FlashMode
     int getFlashMode();
 
-
-    /**
-     * 设置对焦状态
-     * @return
-     */
     void setFocusState(boolean focusState);
-    /**
-     * 获取对焦状态
-     * @return
-     */
+
     boolean getFocusState();
 }

@@ -1,5 +1,14 @@
 /*
- * Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+ * (C) Copyright 2018, ZSmarter Technology Co, Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package com.zsmarter.ocr.camera;
 
@@ -54,9 +63,6 @@ public class CameraActivity extends Activity {
 
     public static final String CONTENT_TYPE_BANK_CARD = "bankCard";
     public static final String CONTENT_TYPE_ID_CARD = "idCard";
-    public static final String CONTENT_TYPE_NUM = "num";
-    public static final String CONTENT_TYPE_CHI_SIM = "chi_sim";
-    public static final String CONTENT_TYPE_ENG = "eng";
 
     public static final String RESULT_TRANSLATE = "result_translate";
 
@@ -83,7 +89,6 @@ public class CameraActivity extends Activity {
     private FrameOverlayView overlayView;
     private MaskView cropMaskView;
     private ImageView takePhotoBtn;
-    private ImageView displayImageView;
     private PermissionCallback permissionCallback = new PermissionCallback() {
         @Override
         public boolean onRequestPermission() {
@@ -160,7 +165,6 @@ public class CameraActivity extends Activity {
                     } else {
                         maskType = MaskView.MASK_TYPE_SINGLE_LINE;
                     }
-//                    overlayView.setVisibility(View.INVISIBLE);
                 } else {
                     maskType = MaskView.MASK_TYPE_NONE;
                 }
@@ -298,7 +302,6 @@ public class CameraActivity extends Activity {
     private View.OnClickListener cropCancelButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // 释放 cropView中的bitmap;
             cropView.setFilePath(null);
             showTakePicture();
         }
@@ -338,7 +341,8 @@ public class CameraActivity extends Activity {
         });
     }
 
-    //用于扫描模式
+
+    //For Scanning mode
     private void doTranslate(final Bitmap bitmap) {
         CameraThreadPool.execute(new Runnable() {
             @Override
@@ -472,9 +476,6 @@ public class CameraActivity extends Activity {
         }
     }
 
-    /**
-     * 做一些收尾工作
-     */
     private void doClear() {
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);

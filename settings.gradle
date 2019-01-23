@@ -1,5 +1,1 @@
-/*
- * Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
- */
 include ':app', ':ocr_zs', ':tess-two'
-

@@ -1,5 +1,14 @@
 /*
- * Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+ * (C) Copyright 2018, ZSmarter Technology Co, Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package com.zsmarter.ocr.demo;
 
@@ -33,13 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int REQUEST_CODE_BANKCARD = 101;
-    private static final int REQUEST_CODE_IDCARD = 102;
-    private static final int REQUEST_CODE_NUM = 103;
-    private static final int REQUEST_CODE_CHI_SIM = 104;
-    private static final int REQUEST_CODE_CHI_TRA = 105;
-    private static final int REQUEST_CODE_ENG = 106;
-
+    private static final int REQUEST_CODE_TAKE_PHOTO = 106;
     private static final int REQUEST_CODE_LOCAL = 107;
     private static final int RESIZE_REQUEST_CODE = 108;
 
@@ -74,40 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         PIC_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + "/ocr_pic.jpg";
 
-//        isScan = findViewById(R.id.is_scan);
-
-        // 银行卡号识别
-//        findViewById(R.id.bankcard_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-//                intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH, PIC_PATH);
-//
-//                intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
-//                        CameraActivity.CONTENT_TYPE_BANK_CARD);
-//                intent.putExtra(CameraActivity.KEY_SCAN_MODE, isScan.isChecked());
-//                startActivityForResult(intent, REQUEST_CODE_BANKCARD);
-//            }
-//        });
-
-        //身份证识别
-//        findViewById(R.id.IDcard_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-//                intent.putExtra(CameraActivity.KEY_OUTPUT_FILE_PATH, PIC_PATH);
-//                intent.putExtra(CameraActivity.KEY_CONTENT_TYPE,
-//                        CameraActivity.CONTENT_TYPE_ID_CARD);
-//                intent.putExtra(CameraActivity.KEY_SCAN_MODE, isScan.isChecked());
-//                startActivityForResult(intent, REQUEST_CODE_IDCARD);
-//            }
-//        });
-
-
-
-        //拍照识别
+        //open the camera
         findViewById(R.id.take_photo_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,14 +89,13 @@ public class MainActivity extends AppCompatActivity {
                         convertLanguageType(languageType.getSelectedItemPosition()));
                 intent.putExtra(CameraActivity.KEY_PAGE_SEG_MODE,
                         convertPageSegMode(psmMode.getSelectedItemPosition()));
-//                intent.putExtra(CameraActivity.KEY_SCAN_MODE, isScan.isChecked());
                 intent.putExtra(CameraActivity.KEY_CROP_ENABLED, isCrop.isChecked());
                 intent.putExtra(CameraActivity.KEY_AUTO_CROP_ENABLED, isAutoCrop.isChecked());
-                startActivityForResult(intent, REQUEST_CODE_CHI_SIM);
+                startActivityForResult(intent, REQUEST_CODE_TAKE_PHOTO);
             }
         });
 
-        //本地照片识别
+        //Open the album and select a photo
         findViewById(R.id.local_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //继续识别当前图片
+        //Continue to identify the current picture
 
         transAgain = findViewById(R.id.trans_again);
         transAgain.setVisibility(View.INVISIBLE);
@@ -243,13 +212,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showImage(Intent data) {
         try {
-            Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+            Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
             Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+                    filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String path = cursor.getString(columnIndex);  //获取照片路径
+            String path = cursor.getString(columnIndex);
             cursor.close();
             Bitmap bitmap = BitmapFactory.decodeFile(path);
             imageView.setImageBitmap(bitmap);
@@ -324,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //增量0.1s
+    //timer
     private int recLen = 0;
     private int second = 0;
     Handler handler = new Handler();

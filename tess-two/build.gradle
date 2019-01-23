@@ -1,8 +1,7 @@
 import org.apache.tools.ant.taskdefs.condition.Os
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.novoda.bintray-release'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -26,6 +25,7 @@ android {
             java.srcDirs = ['src']
             res.srcDirs = ['res']
             jni.srcDirs = []
+            jniLibs.srcDirs = ['libs']
         }
     }
 
@@ -53,11 +53,6 @@ android {
 
         commandLine "${ndkDirPrefix}ndk-build${ndkBuildExt}", '-C', file('.').absolutePath, 'clean'
     }
-    externalNativeBuild {
-        ndkBuild {
-            path file('jni/Android.mk')
-        }
-    }
 
     tasks.withType(Delete) {
         cleanTask -> cleanTask.dependsOn ndkClean
@@ -70,71 +65,17 @@ dependencies {
 }
 
 
-// Settings for uploading module AAR to Bintray for library distribution
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+publish {
+    userOrg = 'zsmarter'
+    groupId = 'com.googlecode'
+    artifactId = 'tess-two-api'
+    publishVersion = '1.0.0'
+    desc = 'tess-two-api'
+}
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }
 
-task javadoc(type: Javadoc) {
-    failOnError = false
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    options {
-        links "http://docs.oracle.com/javase/7/docs/api/"
-        linksOffline "http://d.android.com/reference","${android.sdkDirectory}/docs/reference"
-    }
-}
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            name = 'tess-two'
-
-            packaging = 'aar'
-            groupId = 'com.rmtheis'
-            artifactId = 'tess-two'
-
-            developers {
-                developer {
-                    id = 'rmtheis'
-                    name = 'Robert Theis'
-                    email = 'robert.m.theis@gmail.com'
-                }
-            }
-            licenses {
-                license {
-                    name = 'The Apache Software License, Version 2.0'
-                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution = 'repo'
-                }
-            }
-            scm {
-                url 'https://github.com/rmtheis/tess-two'
-            }
-        }
-    }
-}
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = 'maven'
-        name = 'tess-two'
-        userOrg = user
-        publish = true
-    }
-}

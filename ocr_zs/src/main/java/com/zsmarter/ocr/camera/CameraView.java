@@ -1,5 +1,14 @@
 /*
- * Copyright (C) 2017 Baidu, Inc. All Rights Reserved.
+ * (C) Copyright 2018, ZSmarter Technology Co, Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package com.zsmarter.ocr.camera;
 
@@ -29,29 +38,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * 负责，相机的管理。同时提供，裁剪遮罩功能。
- */
+
 public class CameraView extends FrameLayout {
 
-    /**
-     * 照相回调
-     */
+
     interface OnTakePictureCallback {
         void onPictureTaken(Bitmap bitmap);
     }
 
-    /**
-     * 垂直方向 {@link #setOrientation(int)}
-     */
     public static final int ORIENTATION_PORTRAIT = 0;
-    /**
-     * 水平方向 {@link #setOrientation(int)}
-     */
+
     public static final int ORIENTATION_HORIZONTAL = 90;
-    /**
-     * 水平翻转方向 {@link #setOrientation(int)}
-     */
+
     public static final int ORIENTATION_INVERT = 270;
 
     @IntDef({ORIENTATION_PORTRAIT, ORIENTATION_HORIZONTAL, ORIENTATION_INVERT})
@@ -61,50 +59,28 @@ public class CameraView extends FrameLayout {
 
     private ICameraControl cameraControl;
 
-    /**
-     * 相机预览View
-     */
     private View displayView;
-    /**
-     * 身份证，银行卡，等裁剪用的遮罩
-     */
+
     private MaskView maskView;
 
-    /**
-     * 用于显示提示证 "请对齐身份证正面" 之类的背景
-     */
     private ImageView hintView;
 
-    /**
-     * 用于显示提示证 "请对齐身份证正面" 之类的文字
-     */
     private TextView hintViewText;
 
-    /**
-     * 提示文案容器
-     */
     private LinearLayout hintViewTextWrapper;
 
-    /**
-     * 是否扫描
-     */
     private boolean isEnableScan;
 
     public void setEnableScan(boolean enableScan) {
         isEnableScan = enableScan;
     }
 
-    /**
-     * 图片保存路径
-     */
     private File picSave;
 
     public void setSaveFile(File file) {
         picSave = file;
     }
-    /**
-     * 是否有图片采集框
-     */
+
     private boolean isAutoCropEnabled;
 
     public void setAutoCropEnabled(boolean enableCrop) {
@@ -245,7 +221,7 @@ public class CameraView extends FrameLayout {
                 return;
             }
 
-            // BitmapRegionDecoder不会将整个图片加载到内存。
+            // BitmapRegionDecoder, The entire picture will not be loaded into memory
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(data, 0, data.length, true);
 
             int width = rotation % 180 == 0 ? decoder.getWidth() : decoder.getHeight();
@@ -263,29 +239,23 @@ public class CameraView extends FrameLayout {
             int right = width * frameRect.right / maskView.getWidth();
             int bottom = height * frameRect.bottom / maskView.getHeight();
 
-            // 高度大于图片
             if (previewFrame.top < 0) {
-                // 宽度对齐。
                 int adjustedPreviewHeight = previewFrame.height() * getWidth() / previewFrame.width();
                 int topInFrame = ((adjustedPreviewHeight - frameRect.height()) / 2)
                         * getWidth() / previewFrame.width();
                 int bottomInFrame = ((adjustedPreviewHeight + frameRect.height()) / 2) * getWidth()
                         / previewFrame.width();
 
-                // 等比例投射到照片当中。
                 top = topInFrame * height / previewFrame.height();
                 bottom = bottomInFrame * height / previewFrame.height();
             } else {
-                // 宽度大于图片
                 if (previewFrame.left < 0) {
-                    // 高度对齐
                     int adjustedPreviewWidth = previewFrame.width() * getHeight() / previewFrame.height();
                     int leftInFrame = ((adjustedPreviewWidth - frameRect.width()) / 2) * getHeight()
                             / previewFrame.height();
                     int rightInFrame = ((adjustedPreviewWidth + frameRect.width()) / 2) * getHeight()
                             / previewFrame.height();
 
-                    // 等比例投射到照片当中。
                     left = leftInFrame * width / previewFrame.width();
                     right = rightInFrame * width / previewFrame.width();
                 }
@@ -301,7 +271,6 @@ public class CameraView extends FrameLayout {
                 region = maskView.getLessFrameRect(region);
             }
 
-            // 90度或者270度旋转
             if (rotation % 180 == 90) {
                 int x = decoder.getWidth() / 2;
                 int y = decoder.getHeight() / 2;
@@ -309,7 +278,6 @@ public class CameraView extends FrameLayout {
                 int rotatedWidth = region.height();
                 int rotated = region.width();
 
-                // 计算，裁剪框旋转后的坐标
                 region.left = x - rotatedWidth / 2;
                 region.top = y - rotated / 2;
                 region.right = x + rotatedWidth / 2;
@@ -319,7 +287,7 @@ public class CameraView extends FrameLayout {
 
             BitmapFactory.Options options = new BitmapFactory.Options();
 
-            // 最大图片大小。
+            //Maximum picture size.
             int maxPreviewImageSize = 2560;
             int size = Math.min(decoder.getWidth(), decoder.getHeight());
             size = Math.min(size, maxPreviewImageSize);
@@ -332,13 +300,11 @@ public class CameraView extends FrameLayout {
             Bitmap bitmap = decoder.decodeRegion(region, options);
 
             if (rotation != 0) {
-                // 只能是裁剪完之后再旋转了。有没有别的更好的方案呢？
                 Matrix matrix = new Matrix();
                 matrix.postRotate(rotation);
                 Bitmap rotatedBitmap = Bitmap.createBitmap(
                         bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
                 if (bitmap != rotatedBitmap) {
-                    // 有时候 createBitmap会复用对象
                     bitmap.recycle();
                 }
                 bitmap = rotatedBitmap;

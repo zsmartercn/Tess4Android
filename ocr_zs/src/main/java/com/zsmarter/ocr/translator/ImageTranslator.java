@@ -1,3 +1,17 @@
+
+/*
+ * (C) Copyright 2018, ZSmarter Technology Co, Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
+
 package com.zsmarter.ocr.translator;
 
 import android.content.Context;
@@ -63,7 +77,7 @@ public class ImageTranslator {
     }
 
     /**
-     * 扫描结果回调用
+     * Translator Callback
      */
     public interface TesseractCallback {
         void onStart(Bitmap bitmap);
@@ -91,38 +105,11 @@ public class ImageTranslator {
         String tessdataPath = languageDir.substring(0, languageDir.length() - "tessdata/".length());
         Log.d(TAG, "translate: tessdataPath : " + tessdataPath);
         if (baseApi.init(tessdataPath, mLanguage, TessBaseAPI.OEM_CUBE_ONLY)) {
-            //设置识别模式
             baseApi.setPageSegMode(mPageSegMode);
             if (bmp != null) {
-
-
-                /**
-                 * 以下为自定义图像预处理实现
-                */
-                //调整亮度
-//                int bright = ImageUtil.getBright(bmp);
-//                if (bright < 160) {
-//                    bmp = ImageUtil.brightenBitmap(bmp, 160 - bright);
-//                    //调整对比度
-//                    bmp = ImageUtil.changeContrast(bmp, 1.1f);
-//                }
-//                //图像灰度化
-//                bmp = ImageUtil.bitmap2dGray(bmp);
-//                //中值滤波
-//                bmp = ImageUtil.medianFilter(bmp, 3, 3);
-//                //锐化
-//                bmp = ImageUtil.sharpenImageAmeliorate(bmp);
-//                //二值化
-//                bmp = ImageUtil.gray2Binary(bmp);
-//                bmp = bmp.copy(Bitmap.Config.ARGB_8888, true);
-
-                //图片预处理后回调
-//                callBack.onStart(bmp);
-
-                //设置要识别的图片
+                //set the bitmap for TessBaseAPI
                 baseApi.setImage(bmp);
                 baseApi.setVariable(TessBaseAPI.VAR_SAVE_BLOB_CHOICES, TessBaseAPI.VAR_TRUE);
-                //开始识别
                 String result = baseApi.getUTF8Text();
                 baseApi.clear();
                 baseApi.end();
@@ -211,9 +198,6 @@ public class ImageTranslator {
         return false;
     }
 
-    /**
-     * 筛选扫描结果
-     */
     private boolean filterResultForIDCard(String result) {
         Log.d(TAG, "filterResult2: result : " + result);
         if (result != null && (result.contains("\n") || result.contains("\r\n"))) {
@@ -259,10 +243,9 @@ public class ImageTranslator {
     }
 
     /**
-     * 检查语言包
+     * init Language
      */
     private void checkLanguage(Context context, String language) {
-//        languageDir = "/sdcard/aaa/tessdata/";
         languageDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + "/tessdata/";
 
         String tessdata = languageDir + language + ".traineddata";
