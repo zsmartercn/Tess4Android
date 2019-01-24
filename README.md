@@ -6,8 +6,7 @@ We porting Tesseract 4.0(final) to tess-two project and rewrite dot product func
 
 The project include a full OCR demo App.
 
-In next version,
-- We will add binarisation process with photo that need be recognized.
+In next version,We will add binarisation process with photo that need be recognized.
 
 This project works with:
 
