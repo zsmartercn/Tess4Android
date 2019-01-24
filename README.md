@@ -1,11 +1,8 @@
 
 # Tess4Android
 A fork base on [tess-two](https://github.com/rmtheis/tess-two/) and [Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract).
-
 We porting Tesseract 4.0(final) to tess-two project and rewrite dot product function with ARM NEON.
-
 The project include a full OCR demo App.
-
 In next version,We will add binarisation process with photo that need be recognized.
 
 This project works with:
