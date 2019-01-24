@@ -26,6 +26,16 @@ tess-two as an external dependency:
 	dependencies {
 	    implementation 'com.zsmarter:Tess4Android:1.0.0'
 	}
+	
+## Building
+If you want to modify the Tess4Android code, you can build the project locally. 
+
+## Versions
+Release points are tagged with [version numbers][semantic-versioning]. A change 
+to the major version number indicates an API change making that version incompatible 
+with previous versions.
+
+The [change log](CHANGELOG.md) shows what's new in each version.
 
 ## License
 
