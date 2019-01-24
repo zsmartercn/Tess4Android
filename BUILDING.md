@@ -1,50 +1,43 @@
 # Building
 
 This project may be built manually as an alternative to including the pre-built
-AAR as an external dependency in your app project. To start the build, import
-the root directory of this project into Android Studio as an existing Android
-Studio project, or follow the instructions below to build on the command line.
+AAR as an external dependency in your app project. To start the build, import this
+project into Android studio. The project can be compiled as a whole or separately
+by modules. You can choose which module to modify and compile according to your needs.
 
-## _Building with Android Studio_
+## _Building ocr_zs module_
 
-The Gradle build uses the gradle-stable plugin and the Android NDK to
-build the Tesseract and Leptonica native C/C++ code through a call to
-`ndk-build` in `build.gradle`. In Android Studio, use 
+This module needs to rely on the tess-two module, make sure you import dependencies
+before compiling, In Android Studio, use
 
 Build -> Rebuild Project
 
+or use the following commands:
+
+    ./gradlew assemble
+
 to build or rebuild the project.
 
-Note: When building from Android Studio, you may need to set the path to your
-NDK installation in the Project Structure dialog (File->Project Structure).
+## _Building tess-two module_
 
-## _Building on the Command Line_
+The Gradle build uses the gradle-stable plugin and the Android NDK to
+build the Tesseract and Leptonica native C/C++ code through a call to
+`ndk-build` in `build.gradle`. In Android Studio, use
 
-_On Mac/Linux:_
+Build -> Rebuild Project
+
+or use the following commands:
+
+    ./gradlew assemble
+
+to build or rebuild the project.
+
+Note: When building from Android Studio, you may need to set the path to your NDK installation.
 
 Edit your local.properties file to include the path to your NDK directory:
 
     ndk.dir=/path/to/your/android-ndk
 
-Run the following commands:
-
-    export ANDROID_HOME=/path/to/your/android-sdk
-    git clone git://github.com/rmtheis/tess-two tess
-    cd tess
-    ./gradlew assemble
-		
-_On Windows:_
-
-Edit your local.properties file to include the path to your NDK directory:
-
-    ndk.dir=C\:\\path\\to\\your\\android-ndk
-
-Run the following commands:
-
-    set ANDROID_HOME=C:\\path\\to\\your\\android-sdk
-    git clone git://github.com/rmtheis/tess-two tess
-    cd tess
-    gradlew assemble
 
 # Importing
 
@@ -53,30 +46,15 @@ project in Android Studio as a module using
 
 File -> New -> Import Module -> `tess-two` folder
 
-and then adding the dependency to your app module build.gradle:
+and then adding the dependency to your app/lib module build.gradle:
 
         dependencies {
-            implementation project(':tess-two')
+            implementation project(':module_name')
         }
-
-# Testing
-
-_On Mac/Linux:_
-
-    ./preparetests.sh
-    ./gradlew connectedAndroidTest
-
-_On Windows:_
-
-    preparetests.cmd
-    gradlew connectedAndroidTest
-
-Note that some tests will fail due to existing issues.
 
 # Removing
 
-If you want to remove your app's dependency on the tess-two module, reverse
-the import process by removing the module using the Project Structure dialog
-(File->Project Structure), manually deleting the tess-two subfolder from your
-app project folder, and removing the tess-two reference from your app module
-build.gradle.
+If you want to remove your app's dependency on this module, reverse
+the import process by removing the module using the Project Structure dialog(File->Project Structure),
+manually deleting the module subfolder from your app project folder, and removing the module reference
+from your app module build.gradle.
