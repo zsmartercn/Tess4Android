@@ -1,5 +1,5 @@
 # Tess4Android
-A fork base on tess-two(https://github.com/rmtheis/tess-two/) and Tesseract OCR Engine(https://github.com/tesseract-ocr/tesseract).
+A fork base on [tess-two](https://github.com/rmtheis/tess-two/) and [Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract).
 
 We porting Tesseract 4.0(final) to tess-two project and rewrite dot product function with ARM NEON.We add a full feature demo project.
 
@@ -15,7 +15,7 @@ This project works with:
 
 ## Pre-requisites
 - Android 5.0 or higher
-- A v3.05  or higher trained data file for a language. Data files must be copied to
+- A v3.05 or higher trained data file for a language. Data files must be copied to
 the Android device in a subdirectory named tessdata.
 
 ## Usage
@@ -31,7 +31,7 @@ tess-two as an external dependency:
 If you want to modify the Tess4Android code, you can build the project locally. 
 
 ## Versions
-Release points are tagged with [version numbers][semantic-versioning]. A change 
+Release points are tagged with [version numbers](http://semver.org/). A change 
 to the major version number indicates an API change making that version incompatible 
 with previous versions.
 
