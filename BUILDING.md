@@ -44,7 +44,7 @@ Edit your local.properties file to include the path to your NDK directory:
 After building, the code that is generated may be imported into your app
 project in Android Studio as a module using
 
-File -> New -> Import Module -> `tess-two` folder
+File -> New -> Import Module -> `module_name` folder
 
 and then adding the dependency to your app/lib module build.gradle:
 
