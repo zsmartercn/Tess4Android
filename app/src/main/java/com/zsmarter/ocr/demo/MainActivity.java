@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         PIC_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + "/ocr_pic.jpg";
 
+        //init OpenCV
+        ImageTranslator.initOpenCVLib();
+
         //open the camera
         findViewById(R.id.take_photo_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 mLanguageType = LANGUAGE_NUM;
                 break;
         }
-        Log.d(TAG, "mContentType : " + mLanguageType);
+        Log.d(TAG, "mLanguageType : " + mLanguageType);
         return mLanguageType;
     }
 
@@ -243,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(runnable, 100);
 
                 ImageTranslator imageTranslator = ImageTranslator.getInstance();
-                imageTranslator.setContentType(convertLanguageType(languageType.getSelectedItemPosition()));
+//                imageTranslator.setContentType(convertLanguageType(languageType.getSelectedItemPosition()));
                 imageTranslator.setLanguage(convertLanguageType(languageType.getSelectedItemPosition()));
                 imageTranslator.setmPageSegMode(convertPageSegMode(psmMode.getSelectedItemPosition()));
                 imageTranslator.translate(MainActivity.this, bitmap, new ImageTranslator.TesseractCallback() {

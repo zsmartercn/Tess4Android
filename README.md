@@ -2,8 +2,8 @@
 # Tess4Android
 A fork is based on [tess-two](https://github.com/rmtheis/tess-two/) and [Tesseract OCR Engine](https://github.com/tesseract-ocr/tesseract).
 We porting Tesseract 4.0(final) to Android base on tess-two and rewrite dot product function with ARM NEON.
+And we use openCV to pre-process the photos we need to identify.
 The project include a full OCR demo App.
-In next version,We will add binarisation process with photo that need be recognized.
 
 This project works with:
 
@@ -12,6 +12,7 @@ This project works with:
 - Leptonica 1.74.3
 - libjpeg 9b
 - libpng 1.6.25
+- openCV 4.0.1
 
 ## Pre-requisites
 - Android 5.0 or higher
@@ -22,7 +23,7 @@ or add the following dependencies directly, then you can use the full functions 
 The text types supported by tess4Android are simplified Chinese, English and digital.
 
 		dependencies {
-	    	implementation 'com.zsmarter:Tess4Android:1.0.0'
+	    	implementation 'com.zsmarter:Tess4Android:1.0.1'
 		}
 
 2. If you only want to use the tess-two interface that supports Tesseract 4.0, you can refer to the ocr_zs module to import the tess-two module into your app project as a library,
@@ -30,7 +31,7 @@ or add the following dependencies directly. in addition, you should prepare a v3
 subdirectory named tessdata.
 
     	dependencies {
-    	    	implementation 'com.googlecode:tess-two-api:1.0.0'
+    	    	implementation 'com.googlecode:tess-two-api:1.0.1'
     	}
 
 ## Building

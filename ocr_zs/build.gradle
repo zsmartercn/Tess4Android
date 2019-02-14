@@ -41,13 +41,14 @@ dependencies {
     implementation fileTree(includes: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation project(':tess-two')
+    implementation project(':opencv')
 }
 
 publish {
     userOrg = 'zsmarter'
     groupId = 'com.zsmarter'
     artifactId = 'Tess4Android'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'tesseract 4.0 for android'
 }
 

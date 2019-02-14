@@ -22,6 +22,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
+import com.zsmarter.ocr.util.ImageUtil;
+
+import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +52,7 @@ public class ImageTranslator {
     public static final String LANGUAGE_CHINESE = "chi_sim";
     public static final String LANGUAGE_ENG = "eng";
 
-    private String mContentType;
+    private String mContentType = "";
     private String mLanguage;
 
     private int mPageSegMode = TessBaseAPI.PageSegMode.PSM_SPARSE_TEXT;
@@ -74,6 +82,10 @@ public class ImageTranslator {
 
     public void setmPageSegMode(int mPageSegMode) {
         this.mPageSegMode = mPageSegMode;
+    }
+
+    public static void initOpenCVLib(){
+        OpenCVLoader.initDebug();
     }
 
     /**
@@ -107,13 +119,19 @@ public class ImageTranslator {
         if (baseApi.init(tessdataPath, mLanguage, TessBaseAPI.OEM_CUBE_ONLY)) {
             baseApi.setPageSegMode(mPageSegMode);
             if (bmp != null) {
+
+                Bitmap targetBitmap = imageProcessing(bmp);
+
+                //Callback after image preprocessing
+                callBack.onStart(targetBitmap);
+
                 //set the bitmap for TessBaseAPI
-                baseApi.setImage(bmp);
+                baseApi.setImage(targetBitmap);
                 baseApi.setVariable(TessBaseAPI.VAR_SAVE_BLOB_CHOICES, TessBaseAPI.VAR_TRUE);
                 String result = baseApi.getUTF8Text();
                 baseApi.clear();
                 baseApi.end();
-//                bmp.recycle();
+
                 switch (mContentType) {
                     case CONTENT_TYPE_BANK_CARD:
                         if (filterResult2(result)) {
@@ -144,6 +162,42 @@ public class ImageTranslator {
         } else {
             callBack.onFail("TessBaseAPI init failed");
         }
+    }
+
+    /**
+     * Using OpenCV to process pictures
+     * @param bmp
+     * @return
+     */
+    private Bitmap imageProcessing (Bitmap bmp) {
+        Mat srcMat = new Mat();
+        Mat targetMat = new Mat();
+        Mat srcMat1= new Mat();
+
+        Utils.bitmapToMat(bmp, srcMat);
+        Imgproc.cvtColor(srcMat, srcMat1, Imgproc.COLOR_BGRA2GRAY);
+
+        //Top hat transformation
+        Mat kernel=Imgproc.getStructuringElement(Imgproc.MORPH_RECT,new Size(2*8+1,2*8+1),new Point(0,0));
+        Imgproc.morphologyEx(srcMat1,srcMat,Imgproc.MORPH_BLACKHAT,kernel);
+
+        //Filter
+//          Imgproc.medianBlur(targetMat_morp, srcMat, 3);
+//          Imgproc.GaussianBlur(targetMat_morp, srcMat, new Size(3,3), 0);
+        Imgproc.bilateralFilter(srcMat, srcMat1, 5, 30, 20);
+
+        //thresholding
+        Imgproc.threshold(srcMat1, targetMat, 127, 255, Imgproc.THRESH_BINARY_INV | Imgproc.THRESH_OTSU);
+
+        //Further cropping to remove invalid content when recognizing a single line of text
+        if (mPageSegMode == TessBaseAPI.PageSegMode.PSM_SINGLE_LINE) {
+            targetMat = ImageUtil.crop(targetMat);
+        }
+
+        Bitmap targetBitmap = Bitmap.createBitmap(targetMat.width(),targetMat.height(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(targetMat, targetBitmap);
+
+        return targetBitmap;
     }
 
     private boolean filterResultEmpty(String result) {

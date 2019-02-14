@@ -69,7 +69,7 @@ publish {
     userOrg = 'zsmarter'
     groupId = 'com.googlecode'
     artifactId = 'tess-two-api'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'tess-two-api'
 }
 tasks.withType(Javadoc) {

@@ -16,6 +16,9 @@ import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.util.Log;
 
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+
 public class ImageUtil {
     private static final String TAG = "CameraExif";
 
@@ -164,6 +167,66 @@ public class ImageUtil {
         }
 
         return inSampleSize;
+    }
+
+    /**
+     * Cut out invalid content from the top and bottom of a single line of text
+     * @param srcMat
+     * @return
+     */
+    public static Mat crop(Mat srcMat) {
+        int num_rows = srcMat.rows();
+        int num_col = srcMat.cols();
+        int blackNum = 0;
+        int whiteRows = 0;
+        int minRow = 0;
+        int maxRow = num_rows;
+        for (int i = num_rows / 2; i > 0; i--) {
+            blackNum = 0;
+            for (int j = 0; j < num_col; j++) {
+                double[] pix = srcMat.get(i, j);
+                if (pix[0] == 0) {
+                    blackNum++;
+                }
+            }
+            if (blackNum < 30) {
+                whiteRows++;
+            }
+            if (whiteRows >= 3) {
+                minRow = i;
+                break;
+            } else if(blackNum < 15) {
+                minRow = i - 1;
+                break;
+            }
+
+        }
+        whiteRows = 0;
+        for (int i = num_rows / 2; i < num_rows; i++) {
+            blackNum = 0;
+            for (int j = 0; j < num_col; j++) {
+                double[] pix = srcMat.get(i, j);
+                if (pix[0] == 0) {
+                    blackNum++;
+                }
+            }
+            if (blackNum < 30) {
+                whiteRows++;
+            }
+            if (whiteRows >= 3) {
+                maxRow = i;
+                break;
+            } else if(blackNum < 15) {
+                maxRow = i + 1;
+                break;
+            }
+        }
+
+        if (minRow != 0 || maxRow != num_rows) {
+            Rect rect = new Rect(0, minRow, num_col, maxRow - minRow);
+            return new Mat(srcMat, rect);
+        }
+        return srcMat;
     }
 
 }

@@ -1,1 +1,1 @@
-include ':app', ':ocr_zs', ':tess-two'
+include ':app', ':ocr_zs', ':tess-two', ':opencv'
